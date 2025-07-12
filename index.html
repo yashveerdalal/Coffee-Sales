@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Coffee Sales – SQL EDA</title>
+
+    <!-- Font -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      * {
+        box-sizing: border-box;
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        font-family: "Inter", sans-serif;
+        background: linear-gradient(135deg, #f5ebe0, #d7ccc8);
+        color: #3e2f25;
+        display: flex;
+        min-height: 100vh;
+      }
+
+      /* Sidebar */
+      .sidebar {
+        width: 250px;
+        background-color: #a1887f;
+        padding: 30px 20px;
+        position: sticky;
+        top: 0;
+        height: 100vh;
+        overflow-y: auto;
+        flex-shrink: 0;
+      }
+      .sidebar h2 {
+        font-size: 1.2rem;
+        color: #4e342e;
+        margin-bottom: 1rem;
+      }
+      .sidebar a {
+        color: #efebe9;
+        text-decoration: none;
+        display: block;
+        margin: 0.5rem 0;
+        font-size: 0.95rem;
+        transition: 0.3s;
+      }
+      .sidebar a:hover {
+        color: #fff3e0;
+        text-decoration: underline;
+      }
+
+      /* Main */
+      .main {
+        flex: 1;
+        padding: 40px 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      /* Header + button */
+      header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        max-width: 1000px;
+        margin-bottom: 30px;
+        gap: 1rem;
+      }
+      header h1 {
+        font-size: 2.5rem;
+        font-weight: 800;
+        background: linear-gradient(to right, #6d4c41, #d7ccc8);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin: 0;
+      }
+      .dashboard-link {
+        background-color: #4e342e;
+        color: #fff3e0;
+        padding: 12px 24px;
+        border-radius: 12px;
+        font-size: 1rem;
+        font-weight: 600;
+        text-decoration: none;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+        transition: 0.25s ease;
+      }
+      .dashboard-link:hover {
+        background-color: #795548;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 14px rgba(0, 0, 0, 0.18);
+      }
+
+      /* Query blocks */
+      .query-block {
+        width: 100%;
+        max-width: 1000px;
+        margin-bottom: 40px;
+      }
+      .query-block h3 {
+        font-size: 1.2rem;
+        margin-bottom: 10px;
+        color: #6d4c41;
+      }
+      pre {
+        background-color: #efebe9;
+        padding: 20px;
+        border-radius: 12px;
+        overflow-x: auto;
+        font-size: 0.95rem;
+        line-height: 1.6;
+        color: #4e342e;
+      }
+
+      /* Footer */
+      footer {
+        text-align: center;
+        font-size: 0.9rem;
+        color: #5d4037;
+        padding: 20px;
+        margin-top: auto;
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        body {
+          flex-direction: column;
+        }
+        .sidebar {
+          width: 100%;
+          height: auto;
+          position: relative;
+        }
+        .main {
+          padding: 20px;
+        }
+        header {
+          flex-direction: column;
+          text-align: center;
+        }
+        header h1 {
+          font-size: 2rem;
+        }
+        .dashboard-link {
+          width: 100%;
+          text-align: center;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- Sidebar -->
+    <nav class="sidebar">
+      <h2>Reference 📌</h2>
+      <a href="#q1">1. Total Revenue</a>
+      <a href="#q2">2. Total Orders</a>
+      <a href="#q3">3. Orders by Product</a>
+      <a href="#q4">4. Average Order Value</a>
+      <a href="#q5">5. Payment‑Type Split</a>
+      <a href="#q6">6. Revenue by Product</a>
+      <a href="#q7">7. Busiest Hour</a>
+      <a href="#q8">8. Repeat Customers</a>
+      <a href="#q9">9. Revenue from Repeat</a>
+      <a href="#q10">10. Daily Revenue</a>
+      <a href="#q11">11. Top‑Spending Customers</a>
+      <a href="#q12">12. Missing Values</a>
+      <a href="#q13">13. Avg Revenue per Product</a>
+      <a href="#q14">14. Weekday Trend</a>
+      <a href="#q15">15. First & Last Sale Times</a>
+      <a href="#q16">16. % Revenue Repeat Cust</a>
+      <a href="#q17">17. Outlier Transactions</a>
+      <a href="#q18">18. Day‑Part Split</a>
+      <a href="#q19">19. Evening Favorite</a>
+      <a href="#q20">20. Repeat‑Only Products</a>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main">
+      <header>
+        <h1>Coffee‑Sales SQL Exploration</h1>
+        <a
+          href="https://yashveerdalal.github.io/Coffee-Visualisation/"
+          class="dashboard-link"
+          >Continue to Dashboard</a
+        >
+      </header>
+
+      <!-- Query Blocks -->
+      <section id="q1" class="query-block">
+        <h3>1. Total Revenue</h3>
+        <pre><code>SELECT SUM(amount_spent) AS total_revenue FROM sales_clean;</code></pre>
+      </section>
+
+      <section id="q2" class="query-block">
+        <h3>2. Total Orders</h3>
+        <pre><code>SELECT COUNT(*) AS total_orders FROM sales_clean;</code></pre>
+      </section>
+
+      <section id="q3" class="query-block">
+        <h3>3. Orders by Product</h3>
+        <pre><code>SELECT product, COUNT(*) AS order_count
+FROM sales_clean
+GROUP BY product
+ORDER BY order_count DESC;</code></pre>
+      </section>
+
+      <section id="q4" class="query-block">
+        <h3>4. Average Order Value</h3>
+        <pre><code>SELECT ROUND(AVG(amount_spent), 2) AS avg_order_value FROM sales_clean;</code></pre>
+      </section>
+
+      <section id="q5" class="query-block">
+        <h3>5. Payment‑Type Split</h3>
+        <pre><code>SELECT payment_type, COUNT(*) AS orders
+FROM sales_clean
+GROUP BY payment_type
+ORDER BY orders DESC;</code></pre>
+      </section>
+
+      <section id="q6" class="query-block">
+        <h3>6. Revenue by Product</h3>
+        <pre><code>SELECT product, SUM(amount_spent) AS revenue
+FROM sales_clean
+GROUP BY product
+ORDER BY revenue DESC;</code></pre>
+      </section>
+
+      <section id="q7" class="query-block">
+        <h3>7. Busiest Hour</h3>
+        <pre><code>SELECT HOUR(order_time) AS hour, COUNT(*) AS orders
+FROM sales_clean
+GROUP BY hour
+ORDER BY orders DESC
+LIMIT 1;</code></pre>
+      </section>
+
+      <section id="q8" class="query-block">
+        <h3>8. Repeat Customers</h3>
+        <pre><code>SELECT customer_card, COUNT(*) AS visits
+FROM sales_clean
+WHERE customer_card IS NOT NULL
+GROUP BY customer_card
+HAVING COUNT(*) > 1;</code></pre>
+      </section>
+
+      <section id="q9" class="query-block">
+        <h3>9. Revenue from Repeat Customers</h3>
+        <pre><code>SELECT SUM(amount_spent) AS repeat_revenue
+FROM sales_clean
+WHERE customer_card IN (
+  SELECT customer_card
+  FROM sales_clean
+  GROUP BY customer_card
+  HAVING COUNT(*) > 1
+);</code></pre>
+      </section>
+
+      <section id="q10" class="query-block">
+        <h3>10. Daily Revenue</h3>
+        <pre><code>SELECT order_date, SUM(amount_spent) AS daily_revenue
+FROM sales_clean
+GROUP BY order_date
+ORDER BY order_date;</code></pre>
+      </section>
+
+      <section id="q11" class="query-block">
+        <h3>11. Top‑Spending Customers</h3>
+        <pre><code>SELECT customer_card, SUM(amount_spent) AS total_spent
+FROM sales_clean
+WHERE customer_card IS NOT NULL
+GROUP BY customer_card
+ORDER BY total_spent DESC
+LIMIT 5;</code></pre>
+      </section>
+
+      <section id="q12" class="query-block">
+        <h3>12. Missing Values Check</h3>
+        <pre><code>SELECT
+  SUM(CASE WHEN customer_card IS NULL THEN 1 ELSE 0 END) AS null_cards,
+  SUM(CASE WHEN payment_type IS NULL THEN 1 ELSE 0 END) AS null_payment_type
+FROM sales_clean;</code></pre>
+      </section>
+
+      <section id="q13" class="query-block">
+        <h3>13. Avg Revenue per Product</h3>
+        <pre><code>SELECT product, ROUND(AVG(amount_spent), 2) AS avg_revenue
+FROM sales_clean
+GROUP BY product
+ORDER BY avg_revenue DESC;</code></pre>
+      </section>
+
+      <section id="q14" class="query-block">
+        <h3>14. Weekday Trend</h3>
+        <pre><code>SELECT DAYNAME(order_date) AS weekday,
+       COUNT(*)           AS orders,
+       SUM(amount_spent)  AS revenue
+FROM sales_clean
+GROUP BY weekday
+ORDER BY FIELD(weekday,'Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday');</code></pre>
+      </section>
+
+      <section id="q15" class="query-block">
+        <h3>15. First & Last Sale Times</h3>
+        <pre><code>SELECT MIN(order_time) AS first_order,
+       MAX(order_time) AS last_order
+FROM sales_clean;</code></pre>
+      </section>
+
+      <section id="q16" class="query-block">
+        <h3>16. % Revenue from Repeat Customers</h3>
+        <pre><code>WITH repeat_cust AS (
+  SELECT customer_card
+  FROM sales_clean
+  WHERE customer_card IS NOT NULL
+  GROUP BY customer_card
+  HAVING COUNT(*) > 1
+),
+repeat_rev AS (
+  SELECT SUM(amount_spent) AS total
+  FROM sales_clean
+  WHERE customer_card IN (SELECT customer_card FROM repeat_cust)
+),
+overall_rev AS (
+  SELECT SUM(amount_spent) AS total FROM sales_clean
+)
+SELECT ROUND(100.0 * r.total / o.total, 2) AS pct_repeat_rev
+FROM repeat_rev r, overall_rev o;</code></pre>
+      </section>
+
+      <section id="q17" class="query-block">
+        <h3>17. Outlier Transactions</h3>
+        <pre><code>SELECT *
+FROM sales_clean
+WHERE amount_spent < 20 OR amount_spent > 50
+ORDER BY amount_spent;</code></pre>
+      </section>
+
+      <section id="q18" class="query-block">
+        <h3>18. Day‑Part Split (Morning/Afternoon/Evening)</h3>
+        <pre><code>SELECT
+  CASE
+    WHEN HOUR(order_time) BETWEEN 5 AND 11 THEN 'Morning'
+    WHEN HOUR(order_time) BETWEEN 12 AND 17 THEN 'Afternoon'
+    ELSE 'Evening'
+  END AS time_period,
+  COUNT(*) AS orders,
+  SUM(amount_spent) AS revenue
+FROM sales_clean
+GROUP BY time_period
+ORDER BY FIELD(time_period,'Morning','Afternoon','Evening');</code></pre>
+      </section>
+
+      <section id="q19" class="query-block">
+        <h3>19. Evening Favorite Product</h3>
+        <pre><code>SELECT product, COUNT(*) AS evening_orders
+FROM sales_clean
+WHERE HOUR(order_time) BETWEEN 18 AND 22
+GROUP BY product
+ORDER BY evening_orders DESC
+LIMIT 1;</code></pre>
+      </section>
+
+      <section id="q20" class="query-block">
+        <h3>20. Products Bought ONLY by Repeat Customers</h3>
+        <pre><code>WITH repeat_cust AS (
+  SELECT customer_card
+  FROM sales_clean
+  WHERE customer_card IS NOT NULL
+  GROUP BY customer_card
+  HAVING COUNT(*) > 1
+)
+SELECT DISTINCT product
+FROM sales_clean
+WHERE customer_card IN (SELECT customer_card FROM repeat_cust)
+  AND product NOT IN (
+    SELECT DISTINCT product
+    FROM sales_clean
+    WHERE customer_card NOT IN (SELECT customer_card FROM repeat_cust)
+);</code></pre>
+      </section>
+
+      <!-- Footer -->
+      <footer>© 2025 Yashveer Dalal — Coffee Sales SQL EDA</footer>
+    </main>
+  </body>
+</html>
